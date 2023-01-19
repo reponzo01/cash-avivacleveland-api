@@ -35,14 +35,14 @@ class App {
     }
 
     private routes(): void {
-        this.express.get('/', (req, res, next) => {
+        // user route
+        this.express.use('/api', Routes);
+
+        this.express.get('/*', (req, res, next) => {
             res.sendFile(
                 path.join(__dirname, '../client/dist/index.html')
             );
         });
-
-        // user route
-        this.express.use('/api', Routes);
 
         // handle undefined routes
         this.express.use('*', (req, res, next) => {
