@@ -6,15 +6,14 @@ import * as express from 'express';
 import * as path from 'path';
 import { Logger } from './logger/logger';
 import Routes from './routes/routes';
-import { Sequelize } from 'sequelize-typescript';
-import User from './models/User';
+
+import Database from './util/database'
 
 const PORT = 3080;
 
 class App {
     public express: express.Application;
     public logger: Logger;
-    public sequelize: Sequelize;
 
     // array to hold users
     public users: any[];
@@ -23,7 +22,7 @@ class App {
         this.express = express();
         this.middleware();
         this.routes();
-        this.initSql();
+        Database.initSql();
         this.listen();
         this.users = [];
         this.logger = new Logger();
@@ -43,7 +42,7 @@ class App {
         this.express.use('/api', Routes);
 
         this.express.get('/sql', (req, res, next) => {
-          this.testSql();
+          Database.testSql();
           res.json({success: true});
         });
 
@@ -63,34 +62,6 @@ class App {
         this.express.listen(process.env.PORT || PORT, () => {
             console.log(`Listening on ${process.env.PORT || PORT}`);
         });
-    }
-
-    private initSql(): void {
-      // https://www.npmjs.com/package/sequelize-typescript
-      this.sequelize = new Sequelize({
-        host: process.env.MYSQL_DB_HOST,
-        database: process.env.MYSQL_DB_DATABASE,
-        dialect: 'mariadb',
-        username: process.env.MYSQL_DB_USERNAME,
-        password: process.env.MYSQL_DB_PASSWORD,
-        models: [__dirname + '/models'],
-      });
-      this.sequelize
-        .sync()
-        .then(result => {
-          console.log(result);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-
-    private testSql(): void {
-      const user = User.create({
-        username: 'reponzo01',
-        age: 40,
-      });
-      //user.save();
     }
 }
 
