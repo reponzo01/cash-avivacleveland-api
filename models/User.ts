@@ -1,4 +1,5 @@
-import {Table, Column, Model} from 'sequelize-typescript';
+import {Table, Column, Model, HasMany} from 'sequelize-typescript';
+import FederatedCredential from './FederatedCredential';
 
 @Table({
   timestamps: true,
@@ -9,5 +10,23 @@ export default class User extends Model {
   username: string;
 
   @Column
-  age: number;
+  hashedPassword: Buffer;
+
+  @Column
+  salt: Buffer;
+
+  @Column
+  name: string;
+
+  @Column
+  email: string;
+
+  @Column
+  emailVerified: string;
+
+  @Column
+  isFederated: boolean;
+
+  @HasMany(() => FederatedCredential)
+  federatedCredentials: FederatedCredential[];
 }

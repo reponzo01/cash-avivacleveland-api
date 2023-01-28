@@ -6,7 +6,6 @@ class Database {
   public sequelize: Sequelize;
 
   public initSql(): void {
-    console.log('EMANUEL ' + __dirname + '/models');
     // https://www.npmjs.com/package/sequelize-typescript
     this.sequelize = new Sequelize({
       host: process.env.MYSQL_DB_HOST,
@@ -19,7 +18,7 @@ class Database {
     this.sequelize
       .sync()
       .then(result => {
-        console.log(result);
+        // console.log(result);
       })
       .catch(err => {
         console.log(err);
