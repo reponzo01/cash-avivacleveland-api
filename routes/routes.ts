@@ -1,4 +1,3 @@
-import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { Logger } from '../logger/logger';
 import User from './user';

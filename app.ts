@@ -3,13 +3,15 @@ dotenv.config();
 
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
-import * as path from 'path';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { AppSettings } from './appSettings';
 import { Logger } from './logger/logger';
 import Database from './util/database';
 import Routes from './routes/routes';
 import Auth from './routes/auth';
+
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
 
 const PORT = 3080;
 
@@ -22,9 +24,9 @@ class App {
 
   constructor() {
     this.express = express();
+    Database.initSql();
     this.middleware();
     this.routes();
-    Database.initSql();
     this.listen();
     this.users = [];
     this.logger = new Logger();
@@ -34,14 +36,18 @@ class App {
   private middleware(): void {
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
-    this.express.use(express.static(path.join(__dirname, '../client/dist')));
+    this.express.use(express.static(AppSettings.MAIN_CLIENT_PATH));
     this.express.use(
       session({
         secret: process.env.EXPRESS_SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
+        store: new SequelizeStore({
+          db: Database.sequelize,
+        }),
       })
     );
+    this.express.enable("trust proxy");
     this.express.use(passport.session());
   }
 
@@ -59,7 +65,7 @@ class App {
 
     // show Vue frontend
     this.express.get('/*', (req, res, next) => {
-      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+      res.sendFile(AppSettings.MAIN_CLIENT_HTML);
     });
 
     // handle undefined routes

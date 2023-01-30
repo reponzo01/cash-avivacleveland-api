@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as passport from 'passport';
 import * as path from 'path';
+import { AppSettings } from '../appSettings';
 import { Logger } from '../logger/logger';
 import { Strategy } from 'passport-google-oauth20';
 
@@ -48,8 +49,6 @@ class Auth {
     );
 
     passport.serializeUser(function (user, cb) {
-      console.log('serializing user');
-      console.log(user);
       process.nextTick(function () {
         cb(null, { id: user.id, username: user.username, name: user.name });
       });
@@ -64,7 +63,7 @@ class Auth {
 
   private routes(): void {
     this.router.get('/login', (req, res, next) => {
-      res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+      res.sendFile(AppSettings.MAIN_CLIENT_HTML);
     });
 
     this.router.get('/login/federated/google', passport.authenticate('google'));
