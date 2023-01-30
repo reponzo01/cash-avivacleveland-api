@@ -3,6 +3,7 @@ import User from './User';
 
 @Table({
   timestamps: true,
+  modelName: 'FederatedCredential'
 })
 export default class FederatedCredential extends Model {
 

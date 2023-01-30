@@ -1,5 +1,5 @@
-import path = require('path');
 import { Sequelize } from 'sequelize-typescript';
+import FederatedCredential from '../models/FederatedCredential';
 import User from '../models/User';
 
 class Database {
@@ -11,16 +11,17 @@ class Database {
       host: process.env.MYSQL_DB_HOST,
       database: process.env.MYSQL_DB_DATABASE,
       dialect: 'mariadb',
+      dialectModule: require('mariadb'),
       username: process.env.MYSQL_DB_USERNAME,
       password: process.env.MYSQL_DB_PASSWORD,
-      models: [path.join(__dirname, '../models')],
     });
+    this.sequelize.addModels([User, FederatedCredential]);
     this.sequelize
       .sync()
-      .then(result => {
+      .then((result) => {
         // console.log(result);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   }
