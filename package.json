@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "ts-node src/index.ts",
     "start:dev": "nodemon",
-    "watch": "nodemon app.js",
-    "lint": "tslint",
+    "watch": "nodemon src/app.js",
+    "lint": "tslint -c tslint.json \"src/**/*.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
