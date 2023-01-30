@@ -26,6 +26,9 @@ export default class User extends Model {
   emailVerified: string;
 
   @Column
+  avatarUrl: string;
+
+  @Column
   isFederated: boolean;
 
   @HasMany(() => FederatedCredential)

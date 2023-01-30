@@ -3,12 +3,16 @@ import * as passport from 'passport';
 import { AppSettings } from '../appSettings';
 import { Logger } from '../logger/logger';
 import { Strategy } from 'passport-google-oauth20';
+import FederatedCredential from '../models/FederatedCredential';
+import User from '../models/User';
 
 declare global {
   namespace Express {
     interface User {
       name: string;
       username: string;
+      email: string;
+      avatarUrl: string;
       id?: number | undefined;
     }
   }
@@ -37,17 +41,46 @@ class Auth {
         },
         function (accessToken, refreshToken, profile, cb) {
           console.log(profile);
-          var user = {
-            id: 5,
-            name: profile.displayName,
-            username: 'test',
-          };
-          cb(null, user);
+          // get from federatedCredential where provider and id match profile
+          FederatedCredential.findOne({
+            include: [User],
+            where: {
+              provider: profile.provider,
+              federatedProviderId: profile.id
+            }
+          })
+          .then((federatedCredential) => {
+            console.log('fed cred: ', federatedCredential);
+            if (federatedCredential == null) {
+              console.log('fed cred is null!');
+              const newUser = User.create({
+                username: profile.emails[0].value,
+                name: profile.displayName,
+                email: profile.emails[0].value,
+                avatarUrl: profile.photos[0].value,
+                isFederated: true
+              })
+              .then((createdUser) => {
+                createdUser
+              });
+            }
+            // const user: Express.User = {
+            //   id: 5,
+            //   name: profile.displayName,
+            //   username: 'test',
+            // };
+            // cb(null, user);
+          })
+          .catch((err) => {
+            console.log(err);
+            return cb(err);
+          });
         }
       )
     );
 
     passport.serializeUser(function (user, cb) {
+      console.log('serializing user: ', user);
       process.nextTick(function () {
         cb(null, { id: user.id, username: user.username, name: user.name });
       });

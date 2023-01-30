@@ -12,6 +12,9 @@ export default class FederatedCredential extends Model {
   userId: number;
 
   @Column
+  provider: string;
+
+  @Column
   federatedProviderId: string;
 
   @BelongsTo(() => User)

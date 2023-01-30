@@ -7,6 +7,7 @@
     "start": "ts-node index.ts",
     "start:dev": "nodemon",
     "watch": "nodemon app.js",
+    "lint": "tslint",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
@@ -36,6 +37,7 @@
     "nodemon": "^2.0.20",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
+    "tslint": "^6.1.3",
     "typescript": "^4.9.4",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
