@@ -1,7 +1,6 @@
 import * as express from 'express';
 import { Logger } from '../logger/logger';
 import User from './user';
-// import Firebase from './firebase';
 
 class Routes {
   public router: express.Router;
@@ -19,9 +18,6 @@ class Routes {
   private routes(): void {
     // user route
     this.router.use('/', User);
-
-    // firebase route
-    // this.router.use('/firebase', Firebase);
   }
 }
 

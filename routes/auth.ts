@@ -1,6 +1,5 @@
 import * as express from 'express';
 import * as passport from 'passport';
-import * as path from 'path';
 import { AppSettings } from '../appSettings';
 import { Logger } from '../logger/logger';
 import { Strategy } from 'passport-google-oauth20';
