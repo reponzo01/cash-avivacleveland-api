@@ -40,49 +40,79 @@ class Auth {
           scope: ['profile', 'email'],
         },
         function (accessToken, refreshToken, profile, cb) {
-          console.log(profile);
-          // get from federatedCredential where provider and id match profile
           FederatedCredential.findOne({
             include: [User],
             where: {
               provider: profile.provider,
-              federatedProviderId: profile.id
-            }
+              federatedProviderId: profile.id,
+            },
           })
-          .then((federatedCredential) => {
-            console.log('fed cred: ', federatedCredential);
-            if (federatedCredential == null) {
-              console.log('fed cred is null!');
-              const newUser = User.create({
-                username: profile.emails[0].value,
-                name: profile.displayName,
-                email: profile.emails[0].value,
-                avatarUrl: profile.photos[0].value,
-                isFederated: true
-              })
-              .then((createdUser) => {
-                createdUser
-              });
-            }
-            // const user: Express.User = {
-            //   id: 5,
-            //   name: profile.displayName,
-            //   username: 'test',
-            // };
-            // cb(null, user);
-          })
-          .catch((err) => {
-            console.log(err);
-            return cb(err);
-          });
+            .then((federatedCredential) => {
+              if (federatedCredential == null) {
+                User.create({
+                  username: profile.emails[0].value,
+                  name: profile.displayName,
+                  email: profile.emails[0].value,
+                  avatarUrl: profile.photos[0].value,
+                  isFederated: true,
+                })
+                  .then((createdUser) => {
+                    FederatedCredential.create({
+                      userId: createdUser.id,
+                      provider: profile.provider,
+                      federatedProviderId: profile.id,
+                    })
+                      .then(() => {
+                        const user: Express.User = {
+                          id: createdUser.id,
+                          name: createdUser.name,
+                          username: createdUser.username,
+                          avatarUrl: createdUser.avatarUrl,
+                          email: createdUser.email,
+                        };
+                        return cb(null, user);
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                        return cb(err);
+                      });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    return cb(err);
+                  });
+              } else {
+                User.findOne({
+                  where: {
+                    id: federatedCredential.userId,
+                  },
+                })
+                  .then((foundUser) => {
+                    return cb(null, foundUser);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    return cb(err);
+                  });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              return cb(err);
+            });
         }
       )
     );
 
     passport.serializeUser(function (user, cb) {
-      console.log('serializing user: ', user);
       process.nextTick(function () {
-        cb(null, { id: user.id, username: user.username, name: user.name });
+        cb(null, {
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+        });
       });
     });
 
@@ -103,7 +133,7 @@ class Auth {
     this.router.get(
       '/oauth2/redirect/google',
       passport.authenticate('google', {
-        successRedirect: '/',
+        successRedirect: '/dashboard',
         failureRedirect: '/login',
       })
     );

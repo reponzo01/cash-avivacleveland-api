@@ -17,7 +17,7 @@ class Routes {
 
   private routes(): void {
     // user route
-    this.router.use('/', User);
+    // this.router.use('/', User);
   }
 }
 
