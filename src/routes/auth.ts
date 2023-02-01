@@ -18,7 +18,7 @@ declare global {
   }
 }
 
-class Auth {
+class AuthRoutes {
   public router: express.Router;
   public logger: Logger;
 
@@ -124,6 +124,13 @@ class Auth {
   }
 
   private routes(): void {
+    this.router.get('/authenticated', (req, res, next) => {
+      if (req.isAuthenticated()) {
+        res.status(AppSettings.HTTP_STATUS_OK).end();
+      }
+      res.status(AppSettings.HTTP_STATUS_UNAUTHORIZED).end();
+    });
+
     this.router.get('/login', (req, res, next) => {
       res.sendFile(AppSettings.MAIN_CLIENT_HTML);
     });
@@ -138,9 +145,10 @@ class Auth {
       })
     );
 
-    this.router.post('/logout', function (req, res, next) {
+    this.router.get('/logout', function (req, res, next) {
       req.logout(function (err) {
         if (err) {
+          console.log(err);
           return next(err);
         }
         res.redirect('/');
@@ -149,4 +157,4 @@ class Auth {
   }
 }
 
-export default new Auth().router;
+export default new AuthRoutes().router;

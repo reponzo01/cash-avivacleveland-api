@@ -10,7 +10,6 @@ import { AppSettings } from './appSettings';
 import { Logger } from './logger/logger';
 import Database from './util/database';
 import Routes from './routes/routes';
-import Auth from './routes/auth';
 
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
@@ -27,7 +26,6 @@ class App {
     this.express = express();
     Database.initSql();
     this.middleware();
-    this.routes();
     this.listen();
     this.users = [];
     this.logger = new Logger();
@@ -55,50 +53,7 @@ class App {
     this.express.use(express.static(AppSettings.MAIN_CLIENT_PATH));
     this.express.enable('trust proxy');
     this.express.use(passport.session());
-  }
-
-  private routes(): void {
-    // auth routes
-    this.express.use('/', Auth);
-
-    // user route
-    this.express.use('/api', Routes);
-
-    // TEST
-    this.express.get('/sql', (req, res, next) => {
-      Database.testSql();
-      res.json({ success: true });
-    });
-
-    // show Vue frontend
-    // Do not do a global check for authentication. Be page selective.
-    this.express.get('/dashboard', this.checkAuthentication, (req, res, next) => {
-      res.sendFile(AppSettings.MAIN_CLIENT_HTML);
-    });
-
-    this.express.get('/*', (req, res, next) => {
-      res.sendFile(AppSettings.MAIN_CLIENT_HTML);
-    });
-
-    // handle undefined routes
-    this.express.use('*', (req, res, next) => {
-      res.send('Make sure url is correct!!!');
-    });
-  }
-
-  private checkAuthentication(
-    req: any,
-    res: any,
-    next: express.NextFunction
-  ): void {
-    console.log('in check auth');
-    if (req.isAuthenticated()) {
-      console.log('calling next');
-      next();
-    } else {
-      console.log('redirecting to login');
-      res.redirect('/login');
-    }
+    this.express.use('/', Routes);
   }
 
   // start server
