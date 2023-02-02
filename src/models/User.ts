@@ -1,12 +1,12 @@
-import {Table, Column, Model, HasMany} from 'sequelize-typescript';
+import { Table, Column, Model, HasMany } from 'sequelize-typescript';
 import FederatedCredential from './FederatedCredential';
+import OrganizationUserRole from './OrganizationUserRole';
 
 @Table({
   timestamps: true,
-  modelName: 'User'
+  modelName: 'User',
 })
 export default class User extends Model {
-
   @Column
   username: string;
 
@@ -33,4 +33,7 @@ export default class User extends Model {
 
   @HasMany(() => FederatedCredential)
   federatedCredentials: FederatedCredential[];
+
+  @HasMany(() => OrganizationUserRole)
+  organizationUserRoles: OrganizationUserRole[];
 }

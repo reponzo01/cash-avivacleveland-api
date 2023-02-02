@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Logger } from '../logger/logger';
 import FederatedCredential from '../models/FederatedCredential';
+import Organization from '../models/Organization';
+import OrganizationUserRole from '../models/OrganizationUserRole';
 import Role from '../models/Role';
 import User from '../models/User';
 
@@ -24,7 +26,13 @@ class Database {
       username: process.env.MYSQL_DB_USERNAME,
       password: process.env.MYSQL_DB_PASSWORD,
     });
-    this.sequelize.addModels([User, FederatedCredential, Role]);
+    this.sequelize.addModels([
+      User,
+      FederatedCredential,
+      Role,
+      Organization,
+      OrganizationUserRole,
+    ]);
     this.sequelize
       .sync()
       .then((result) => {

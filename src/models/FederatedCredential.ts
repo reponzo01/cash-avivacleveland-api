@@ -1,12 +1,17 @@
-import {Table, Column, Model, ForeignKey, BelongsTo} from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import User from './User';
 
 @Table({
   timestamps: true,
-  modelName: 'FederatedCredential'
+  modelName: 'FederatedCredential',
 })
 export default class FederatedCredential extends Model {
-
   @ForeignKey(() => User)
   @Column
   userId: number;
