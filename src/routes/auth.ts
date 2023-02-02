@@ -5,6 +5,7 @@ import { Logger } from '../logger/logger';
 import { Strategy } from 'passport-google-oauth20';
 import FederatedCredential from '../models/FederatedCredential';
 import User from '../models/User';
+import { Constants } from '../util/constants';
 
 declare global {
   namespace Express {
@@ -73,12 +74,12 @@ class AuthRoutes {
                         return cb(null, user);
                       })
                       .catch((err) => {
-                        console.log(err);
+                        this.logger.error(err);
                         return cb(err);
                       });
                   })
                   .catch((err) => {
-                    console.log(err);
+                    this.logger.error(err);
                     return cb(err);
                   });
               } else {
@@ -91,21 +92,21 @@ class AuthRoutes {
                     return cb(null, foundUser);
                   })
                   .catch((err) => {
-                    console.log(err);
+                    this.logger.error(err);
                     return cb(err);
                   });
               }
             })
             .catch((err) => {
-              console.log(err);
+              this.logger.error(err);
               return cb(err);
             });
         }
       )
     );
 
-    passport.serializeUser(function (user, cb) {
-      process.nextTick(function () {
+    passport.serializeUser((user, cb) => {
+      process.nextTick(() => {
         cb(null, {
           id: user.id,
           username: user.username,
@@ -116,8 +117,8 @@ class AuthRoutes {
       });
     });
 
-    passport.deserializeUser(function (user: any, cb) {
-      process.nextTick(function () {
+    passport.deserializeUser((user: any, cb) => {
+      process.nextTick(() => {
         return cb(null, user);
       });
     });
@@ -126,9 +127,9 @@ class AuthRoutes {
   private routes(): void {
     this.router.get('/authenticated', (req, res, next) => {
       if (req.isAuthenticated()) {
-        res.status(AppSettings.HTTP_STATUS_OK).end();
+        res.status(Constants.HTTP_STATUS_OK).end();
       }
-      res.status(AppSettings.HTTP_STATUS_UNAUTHORIZED).end();
+      res.status(Constants.HTTP_STATUS_UNAUTHORIZED).end();
     });
 
     this.router.get('/login', (req, res, next) => {
@@ -145,10 +146,10 @@ class AuthRoutes {
       })
     );
 
-    this.router.get('/logout', function (req, res, next) {
-      req.logout(function (err) {
+    this.router.get('/logout', (req, res, next) => {
+      req.logout((err) => {
         if (err) {
-          console.log(err);
+          this.logger.error(err);
           return next(err);
         }
         res.redirect('/');

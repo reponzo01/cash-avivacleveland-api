@@ -6,12 +6,13 @@ import * as express from 'express';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as morgan from 'morgan';
+import * as ConnectSessionSequelize from 'connect-session-sequelize';
 import { AppSettings } from './appSettings';
 import { Logger } from './logger/logger';
 import Database from './util/database';
 import Routes from './routes/routes';
 
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const SequelizeStore = ConnectSessionSequelize(session.Store);
 
 const PORT = 3080;
 
@@ -59,7 +60,7 @@ class App {
   // start server
   private listen(): void {
     this.express.listen(process.env.PORT || PORT, () => {
-      console.log(`Listening on ${process.env.PORT || PORT}`);
+      this.logger.info(`Listening on ${process.env.PORT || PORT}`);
     });
   }
 }

@@ -1,6 +1,7 @@
 import * as express from 'express';
 import { AppSettings } from '../appSettings';
 import { Logger } from '../logger/logger';
+import { Constants } from '../util/constants';
 import AuthRoutes from './auth';
 import UsersRoutes from './users';
 
@@ -63,7 +64,7 @@ class Routes {
     if (req.isAuthenticated()) {
       next();
     } else {
-      res.status(AppSettings.HTTP_STATUS_UNAUTHORIZED).end();
+      res.status(Constants.HTTP_STATUS_UNAUTHORIZED).end();
     }
   }
 }
