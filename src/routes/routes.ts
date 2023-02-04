@@ -1,9 +1,10 @@
 import * as express from 'express';
-import { AppSettings } from '../appSettings';
-import { Logger } from '../logger/logger';
-import { Constants } from '../util/constants';
+import ApiRoutes from './api';
 import AuthRoutes from './auth';
 import UsersRoutes from './users';
+import { AppSettings } from '../appSettings';
+import { Logger } from '../logger/logger';
+import { StatusCodes } from 'http-status-codes';
 
 class Routes {
   public router: express.Router;
@@ -26,7 +27,8 @@ class Routes {
     this.router.use('/users', this.checkAuthenticationShow401, UsersRoutes);
 
     // api route
-    // this.router.use('/api', Routes);
+    // TODO: This isn't authenticated yet! Testing only! Authenticate when not testing!
+    this.router.use('/api', ApiRoutes);
 
     // show Vue frontend
     // Do not do a global check for authentication. Be page selective.
@@ -64,7 +66,7 @@ class Routes {
     if (req.isAuthenticated()) {
       next();
     } else {
-      res.status(Constants.HTTP_STATUS_UNAUTHORIZED).end();
+      res.status(StatusCodes.UNAUTHORIZED).end();
     }
   }
 }

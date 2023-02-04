@@ -1,4 +1,11 @@
-import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  AllowNull,
+} from 'sequelize-typescript';
 import OrganizationUserRole from './OrganizationUserRole';
 
 @Table({
@@ -6,6 +13,7 @@ import OrganizationUserRole from './OrganizationUserRole';
   modelName: 'Role',
 })
 export default class Role extends Model {
+  @AllowNull(false)
   @Column(DataType.ENUM('Admin', 'Member'))
   name: string;
 

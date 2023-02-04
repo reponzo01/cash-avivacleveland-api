@@ -46,7 +46,7 @@ class App {
           db: Database.sequelize,
         }),
         cookie: {
-          // Session expires after 1 min of inactivity.
+          // Session expires after 30 days of inactivity.
           maxAge: 30/*days*/ * 24/*hours*/ * 60/*minute*/ * 60/*seconds*/ * 1000/*milliseconds*/,
         },
       })

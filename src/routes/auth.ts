@@ -1,11 +1,12 @@
 import * as express from 'express';
 import * as passport from 'passport';
+import FederatedCredential from '../models/FederatedCredential';
+import User from '../models/User';
 import { AppSettings } from '../appSettings';
 import { Logger } from '../logger/logger';
 import { Strategy } from 'passport-google-oauth20';
-import FederatedCredential from '../models/FederatedCredential';
-import User from '../models/User';
 import { Constants } from '../util/constants';
+import { StatusCodes } from 'http-status-codes';
 
 declare global {
   namespace Express {
@@ -127,9 +128,9 @@ class AuthRoutes {
   private routes(): void {
     this.router.get('/authenticated', (req, res, next) => {
       if (req.isAuthenticated()) {
-        res.status(Constants.HTTP_STATUS_OK).end();
+        res.status(StatusCodes.OK).end();
       }
-      res.status(Constants.HTTP_STATUS_UNAUTHORIZED).end();
+      res.status(StatusCodes.UNAUTHORIZED).end();
     });
 
     this.router.get('/login', (req, res, next) => {

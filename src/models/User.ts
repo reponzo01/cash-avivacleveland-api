@@ -1,4 +1,11 @@
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  HasMany,
+  AllowNull,
+  Default,
+} from 'sequelize-typescript';
 import FederatedCredential from './FederatedCredential';
 import OrganizationUserRole from './OrganizationUserRole';
 
@@ -7,6 +14,7 @@ import OrganizationUserRole from './OrganizationUserRole';
   modelName: 'User',
 })
 export default class User extends Model {
+  @AllowNull(false)
   @Column
   username: string;
 
@@ -16,9 +24,11 @@ export default class User extends Model {
   @Column
   salt: Buffer;
 
+  @AllowNull(false)
   @Column
   name: string;
 
+  @AllowNull(false)
   @Column
   email: string;
 
@@ -28,6 +38,8 @@ export default class User extends Model {
   @Column
   avatarUrl: string;
 
+  @AllowNull(false)
+  @Default(false)
   @Column
   isFederated: boolean;
 

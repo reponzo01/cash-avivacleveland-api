@@ -1,12 +1,11 @@
-import { Sequelize } from 'sequelize-typescript';
-import { Logger } from '../logger/logger';
 import FederatedCredential from '../models/FederatedCredential';
 import Organization from '../models/Organization';
 import OrganizationUserRole from '../models/OrganizationUserRole';
 import Role from '../models/Role';
 import User from '../models/User';
-
-const roles: string[] = ['Admin', 'Member'];
+import { Constants } from './constants';
+import { Logger } from '../logger/logger';
+import { Sequelize } from 'sequelize-typescript';
 
 class Database {
   public sequelize: Sequelize;
@@ -43,15 +42,8 @@ class Database {
       });
   }
 
-  public testSql(): void {
-    const user = User.create({
-      username: 'reponzo01',
-      age: 40,
-    });
-  }
-
   private seedRoles(): void {
-    for (const roleToCheck of roles) {
+    for (const roleToCheck of Constants.ROLES) {
       Role.findOne({
         where: {
           name: roleToCheck,

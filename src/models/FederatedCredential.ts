@@ -4,6 +4,7 @@ import {
   Model,
   ForeignKey,
   BelongsTo,
+  AllowNull,
 } from 'sequelize-typescript';
 import User from './User';
 
@@ -16,9 +17,11 @@ export default class FederatedCredential extends Model {
   @Column
   userId: number;
 
+  @AllowNull(false)
   @Column
   provider: string;
 
+  @AllowNull(false)
   @Column
   federatedProviderId: string;
 

@@ -1,5 +1,5 @@
 export class Constants {
-  public static HTTP_STATUS_OK = 200;
-  public static HTTP_STATUS_UNAUTHORIZED = 401;
-  public static HTTP_STATUS_NOT_FOUND = 404;
+  public static ROLE_ADMIN = 'Admin';
+  public static ROLE_MEMBER = 'Member';
+  public static ROLES: string[] = [this.ROLE_ADMIN, this.ROLE_MEMBER];
 }

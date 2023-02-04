@@ -1,8 +1,6 @@
 import * as express from 'express';
-import { AppSettings } from '../appSettings';
 import { Logger } from '../logger/logger';
-import User from '../models/User';
-import { Constants } from '../util/constants';
+import { StatusCodes } from 'http-status-codes';
 
 class UsersRoutes {
   public router: express.Router;
@@ -28,7 +26,7 @@ class UsersRoutes {
 
     // request to get user by id
     this.router.get('/:id', (req, res, next) => {
-      res.status(Constants.HTTP_STATUS_NOT_FOUND).send('Not yet implemented.');
+      res.status(StatusCodes.NOT_FOUND).send('Not yet implemented.');
     });
   }
 }
