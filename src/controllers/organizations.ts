@@ -5,11 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Constants } from '../util/constants';
 
 class OrganizationsController {
-  public getOrganizations(
-    req: any,
-    res: any,
-    next: any
-  ): void {
+  public getOrganizations(req: any, res: any, next: any): void {
     Organization.findAll({
       include: [
         {
@@ -19,25 +15,16 @@ class OrganizationsController {
           },
         },
       ],
-    })
-    .then((organizations) => {
+    }).then((organizations) => {
       res.json(organizations);
     });
   }
 
-  public getOrganizationById(
-    req: any,
-    res: any,
-    next: any
-  ): void {
+  public getOrganizationById(req: any, res: any, next: any): void {
     res.status(StatusCodes.NOT_FOUND).send('Not yet implemented.');
   }
 
-  public postAddOrganization(
-    req: any,
-    res: any,
-    next: any
-  ): void {
+  public postAddOrganization(req: any, res: any, next: any): void {
     const name = req.body.name;
     const description = req.body.description;
     Organization.findOne({
@@ -50,28 +37,24 @@ class OrganizationsController {
         },
       ],
       where: {
-        name: name
-      }
-    })
-    .then((foundOrganization) => {
+        name: name,
+      },
+    }).then((foundOrganization) => {
       if (foundOrganization == null) {
         Organization.create({
           name: name,
-          description: description
-        })
-        .then((createOrganization) => {
+          description: description,
+        }).then((createOrganization) => {
           Role.findOne({
             where: {
-              name: Constants.ROLE_ADMIN
-            }
-          })
-          .then((role) => {
+              name: Constants.ROLE_ADMIN,
+            },
+          }).then((role) => {
             OrganizationUserRole.create({
               userId: req.user.id,
               roleId: role.id,
-              organizationId: createOrganization.id
-            })
-            .then(() => {
+              organizationId: createOrganization.id,
+            }).then(() => {
               Organization.findOne({
                 include: [
                   {
@@ -82,19 +65,49 @@ class OrganizationsController {
                   },
                 ],
                 where: {
-                  id: createOrganization.id
-                }
-              })
-              .then((organization) => {
+                  id: createOrganization.id,
+                },
+              }).then((organization) => {
                 res.status(StatusCodes.CREATED).json(organization);
               });
-            })
-          })
-        })
+            });
+          });
+        });
       } else {
-        res.status(StatusCodes.BAD_REQUEST).send('Organization name already exists.');
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .send('Organization name already exists.');
       }
-    })
+    });
+  }
+
+  public deleteOrganizationById(req: any, res: any, next: any): void {
+    Organization.findOne({
+      include: [
+        {
+          model: OrganizationUserRole,
+          where: {
+            userId: req.user.id,
+          },
+        },
+      ],
+      where: {
+        id: req.params.id,
+      },
+    }).then((organization) => {
+      if (!organization) {
+        res.status(StatusCodes.NOT_FOUND).send('Organization not found.');
+      } else {
+        organization
+          .destroy()
+          .then(() => {
+            res.status(StatusCodes.NO_CONTENT).end();
+          })
+          .catch((err) => {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
+          });
+      }
+    });
   }
 }
 

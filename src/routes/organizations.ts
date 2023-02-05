@@ -18,6 +18,8 @@ class OrganizationsRoutes {
     this.router.get('/:id', OrganizationsController.getOrganizationById);
 
     this.router.post('/', OrganizationsController.postAddOrganization);
+
+    this.router.delete('/:id', OrganizationsController.deleteOrganizationById);
   }
 }
 
